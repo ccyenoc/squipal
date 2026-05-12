@@ -138,13 +138,17 @@ export function HomePage(){
                 {/*content*/}
                 <View
                   style={{
-                    marginLeft:20,
-                    marginRight :20,
-                    marginTop:20,
+                    marginLeft:10,
+                    marginRight :10,
+                    marginTop:50,
                     marginBottom: 20,
                   }}>
 
                     {/*content*/}
+                    <ScrollView
+                     contentContainerStyle={{
+                        paddingBottom: 100,
+                    }}>
   <Text
     style={{
       backgroundColor: "#d1d0d0",
@@ -158,7 +162,7 @@ export function HomePage(){
     Hi! I am your digital pal, Squipal!
   </Text>
 
-  <ScrollView>
+  
   {chatMessage.map((msg, index) => (
     <Text
       key={index}
@@ -186,6 +190,7 @@ export function HomePage(){
                   bottom: 30,
                   display:"flex",
                   flexDirection:"row",
+                  marginTop:20,
                   left: 20,
                   right: 20,
                   gap:8,
