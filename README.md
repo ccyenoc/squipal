@@ -1,50 +1,112 @@
-# Welcome to your Expo app 👋
+# 🧠 Squipal — AI Diary Companion
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## 📖 Introduction
 
-## Get started
+Squipal is a mobile diary application enhanced with an AI-powered chatbot designed to support users emotionally and conversationally. Users can write and store personal diary entries while interacting with “Squipal AI”, a friendly digital companion that responds in a fun, supportive, and engaging way.
 
-1. Install dependencies
+The goal of Squipal is to combine journaling with conversational AI to create a more interactive and comforting user experience.
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## ✨ Features
 
-   ```bash
-   npx expo start
-   ```
+* 📝 Create and store diary entries
+* 🤖 AI chatbot (Squipal) for casual and supportive conversations
+* 💬 Real-time chat interaction with AI
+* 📱 Clean and intuitive mobile UI
+* ☁️ Backend integration with database storage
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠️ Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Frontend
 
-## Get a fresh project
+* React Native (Expo)
+* TypeScript
+* React Hooks (useState, useEffect)
 
-When you're ready, run:
+### Backend
+
+* Node.js
+* Express.js
+
+### Database
+
+* MongoDB (Mongoose)
+
+### AI Integration
+
+* Google Gemini API (Gemini 2.5 Flash)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/ccyenoc/squipal.git
+cd squipal
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+### 2. Install dependencies
 
-To learn more about developing your project with Expo, look at the following resources:
+#### Backend
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+cd backend
+npm install
+```
 
-## Join the community
+#### Frontend
 
-Join our community of developers creating universal apps.
+```bash
+cd frontend
+npm install
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+### 3. Environment variables
+
+Create a `.env` file in the backend folder:
+
+```env
+MONGO_URI=your_mongodb_connection
+GEMINI_API_KEY=your_api_key
+```
+
+---
+
+### 4. Run the app
+
+#### Start backend
+
+```bash
+node server.js
+```
+
+#### Start frontend
+
+```bash
+npx expo start
+```
+
+---
+
+## 📌 Future Improvements
+
+* Chat history persistence
+* Emotion analysis from diary entries
+* Push notifications & reminders
+* Improved chat UI (typing indicator, auto-scroll)
+
+---
+
+## 👨‍💻 Author
+
+Built by [ccyenoc](https://github.com/ccyenoc)
+rd community](https://chat.expo.dev): Chat with Expo users and ask questions.
