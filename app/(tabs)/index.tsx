@@ -146,9 +146,9 @@ export function HomePage(){
 
                     {/*content*/}
                     <ScrollView
-                     contentContainerStyle={{
-                        paddingBottom: 100,
-                    }}>
+                      style={{
+                        height : "85%",
+                      }}>
   <Text
     style={{
       backgroundColor: "#d1d0d0",
