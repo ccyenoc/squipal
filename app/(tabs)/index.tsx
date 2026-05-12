@@ -1,98 +1,287 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import DiaryCard from "@/frontend/components/diary_card";
+import DiaryCardInput from "@/frontend/components/diary_card_input";
+import { Ionicons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+import { Image, KeyboardAvoidingView, Modal, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import squipal from "../../assets/images/squipal.png";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export function HomePage(){
+    const [diaries, setDiaries] = useState<any []>([]);
+    const [showChat, setShowChat] = useState(false);
+    const [message, setMessage] = useState("");
+    const [chatMessage , setChatMessage] = useState<any[]>([]);
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    // fetch all diaries from database
+    const fetchDiaries = async() => {
+        try{
+            const response = await fetch("http://192.168.100.40:3000/diary");
+            const data = await response.json();
+            setDiaries(data);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+            }
+        catch(err){
+         console.log("ERROR :",err);
+    }
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+      // send the message to the backend for response
+      const handleSend = async () => {
+  if (!message.trim()) return;
+
+  try {
+    console.log("User message:", message);
+
+    // show user message FIRST
+    setChatMessage(prev => [
+      ...prev,
+      { sender: "user", text: message }
+    ]);
+
+    setMessage("");
+
+    const response = await fetch("http://192.168.100.40:3000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message }),
+    });
+
+    const data = await response.json();
+
+    // 🔥 LOG AI reply
+    console.log("AI reply:", data);
+
+    // show bot reply
+    setChatMessage(prev => [
+      ...prev,
+      { sender: "bot", text: data.reply }
+    ]);
+
+    
+
+  } catch (err) {
+    console.log("ERROR:", err);
+  }
+};
+
+ useEffect(() => {
+        fetchDiaries();
+    }, []);
+
+    return(
+        <ScrollView
+        style={{ 
+            padding: 20 ,
+        }}>
+
+            <Modal
+              animationType="slide"
+              visible={showChat}
+              transparent>
+
+                 <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1 }}
+  >
+
+                <View
+  style={{
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  }}
+>
+  <View
+    style={{
+      backgroundColor: "#ffffff",
+      borderTopLeftRadius: 30,
+      borderTopRightRadius: 30,
+      padding: 20,
+      height: "75%",
+    }}
+  >
+
+                {/*header*/}
+                <View
+                  style={{
+                    flexDirection:"row",
+                    alignItems:"center",
+                    gap:10,
+                  }}>
+
+                    <TouchableOpacity onPress={() => setShowChat(false)}>
+    <Ionicons
+      name="arrow-back"
+      size={24}
+      color="black"
+    />
+  </TouchableOpacity>
+  
+                    <Image
+                     source={squipal}
+                      style={{
+                        width:40,
+                        height:40,
+                        justifyContent:"center",
+                        alignItems:"center",
+                      }}/>
+                    <Text
+                      style={{
+                        fontWeight : "bold",
+                        fontSize : 20,
+                      }}>Squipal AI</Text>
+
+                </View>
+
+
+                {/*content*/}
+                <View
+                  style={{
+                    marginLeft:20,
+                    marginRight :20,
+                    marginTop:20,
+                    marginBottom: 20,
+                  }}>
+
+                    {/*content*/}
+  <Text
+    style={{
+      backgroundColor: "#d1d0d0",
+      color: "#000",
+      width: "70%",
+      borderRadius: 20,
+      padding: 10,
+      marginBottom: 10,
+    }}
+  >
+    Hi! I am your digital pal, Squipal!
+  </Text>
+
+  <ScrollView>
+  {chatMessage.map((msg, index) => (
+    <Text
+      key={index}
+      style={{
+        backgroundColor: msg.sender === "user" ? "#0035d3" : "#d1d0d0",
+        color: msg.sender === "user" ? "#fff" : "#000",
+        alignSelf: msg.sender === "user" ? "flex-end" : "flex-start",
+        borderRadius: 20,
+        padding: 10,
+        marginBottom: 10,
+        maxWidth: "70%",
+      }}
+    >
+      {msg.text}
+    </Text>
+  ))}
+  </ScrollView>
+
+                </View>
+
+                {/*text input*/}
+                <View
+                style={{
+                  position: "absolute",
+                  bottom: 30,
+                  display:"flex",
+                  flexDirection:"row",
+                  left: 20,
+                  right: 20,
+                  gap:8,
+                }}>
+
+                <TextInput
+                value = {message}
+                onChangeText = {setMessage}
+                style={{
+                  backgroundColor:"#ffffff",
+                  borderRadius:20,
+                  borderColor:"#d1d0d0",
+                  borderWidth:1,
+                  padding:15,
+                  width : "80%",
+                  fontSize:15,
+                }}
+                placeholder="Chat with Squipal..."
+                />
+
+                <TouchableOpacity
+    onPress={handleSend}
+    style={{
+      backgroundColor: "#0035d3",
+      paddingVertical: 12,
+      paddingHorizontal: 18,
+      justifyContent:"center",
+      borderRadius: 20,
+    }}
+  >
+    <Text style={{ color: "white", fontWeight: "bold" }}>
+      Send
+    </Text>
+  </TouchableOpacity>
+
+                </View>
+
+                
+                </View>
+                </View>
+
+                </KeyboardAvoidingView>
+            </Modal>
+
+        
+        <View
+   style={{
+      marginTop: 70,
+      alignItems: "center",
+      justifyContent:"center",
+      gap: 10,
+      flexDirection:"row",
+   }}
+>
+    <TouchableOpacity
+      onPress={() => setShowChat(true)}>
+   <Image
+      source={squipal}
+      style={{
+         width: 50,
+         height: 50,
+      }}
+   />
+   </TouchableOpacity>
+
+   <Text
+      style={{
+         fontSize: 24,
+         textAlign: "center",
+         fontWeight : "bold",
+      }}
+   >
+      Welcome Back !
+   </Text>
+</View>
+
+        < DiaryCardInput   />
+        <Text
+          style={{
+            fontSize : 24,
+            fontWeight : "bold",
+            textAlign : "left",
+            marginBottom : 20,
+          }}>Your Story</Text>
+        
+        
+        {diaries.map((diary,index) => (
+            <DiaryCard
+                key={index}
+                content={diary.content}
+                date={new Date(diary.date).toLocaleDateString()}
+            />
+        ))}
+      
+        </ScrollView>
+    )
+}
+
+export default HomePage;
